@@ -1,56 +1,89 @@
 def rate_drink(goal, time_of_day, user_state, preferred_effects, avoid_effects, urgency, drink_profiles):
-
     score = 0.0
+    total_weight = 0.0  # Track the total weight of contributions
 
     # goal rules
     if goal == "sleep":
-        score += 2 * drink_profiles.get("sleep", 0.0) # sleep is an important goal
+        weight = 2.0
+        score += weight * drink_profiles.get("sleep", 0.0)
+        total_weight += weight
     elif goal == "mood":
-        score += drink_profiles.get("mood_boost", 0.0)
+        weight = 1.2 
+        score += weight * drink_profiles.get("mood_boost", 0.0)
+        total_weight += weight
     elif goal == "energy":
-        score += drink_profiles.get("energy", 0.0)
+        weight = 1.0
+        score += weight * drink_profiles.get("energy", 0.0)
+        total_weight += weight
     elif goal == "balance":
-        score += drink_profiles.get("balance", 0.0)
+        weight = 1.0
+        score += weight * drink_profiles.get("balance", 0.0)
+        total_weight += weight
     elif goal == "focus":
-        score += drink_profiles.get("clear_head")
+        weight = 1.0
+        score += weight * drink_profiles.get("clear_head", 0.0)
+        total_weight += weight
 
     # user state rules
     if user_state == "tired":
-        score += drink_profiles.get("energy", 0.0)
+        weight = 1.0
+        score += weight * drink_profiles.get("energy", 0.0)
+        total_weight += weight
     elif user_state == "anxious":
-        score -= drink_profiles.get("anxiety", 0.0)
-        score -= drink_profiles.get("jitters", 0.0)
-        score += drink_profiles.get("relax", 0.0)
+        weight = 1.5
+        score -= weight * drink_profiles.get("anxiety", 0.0)
+        score -= weight * drink_profiles.get("jitters", 0.0)
+        score += weight * drink_profiles.get("relax", 0.0)
+        total_weight += weight
     elif user_state == "wired":
-        score += drink_profiles.get("balance", 0.0)
-        score += drink_profiles.get("relax", 0.0)
+        weight = 1.0
+        score += weight * drink_profiles.get("balance", 0.0)
+        score += weight * drink_profiles.get("relax", 0.0)
+        total_weight += weight
     elif user_state == "foggy":
-        score += drink_profiles.get("clear_head", 0.0)
+        weight = 1.0
+        score += weight * drink_profiles.get("clear_head", 0.0)
+        total_weight += weight
     elif user_state == "stressed":
-        score += drink_profiles.get("relax", 0.0)
-        score -= drink_profiles.get("anxiety", 0.0)
+        weight = 1.5
+        score += weight * drink_profiles.get("relax", 0.0)
+        score -= weight * drink_profiles.get("anxiety", 0.0)
+        total_weight += weight
     elif user_state == "rested":
-        score += drink_profiles.get("balance", 0.0)
-    
+        weight = 1.0
+        score += weight * drink_profiles.get("balance", 0.0)
+        total_weight += weight
+
     # effect rules
     for effect in preferred_effects:
-        # composite effect dealt with seperately 
         if effect == "calm_energy":
-            score += 0.5 * (drink_profiles.get("energy") + drink_profiles.get("relax"))
-        else: 
-            score += drink_profiles.get(effect, 0.0)
+            weight = 0.5
+            score += weight * (drink_profiles.get("energy", 0.0) + drink_profiles.get("relax", 0.0))
+            total_weight += weight
+        else:
+            weight = 1.0
+            score += weight * drink_profiles.get(effect, 0.0)
+            total_weight += weight
 
     # avoid rules
     for avoid in avoid_effects:
-        score -= drink_profiles.get(avoid, 0.0)
-    
-    # urgency rules using users urgency along with energy profile
+        weight = 1.5  # Increased penalty weight to avoid mass ratings of 1.0
+        score -= weight * drink_profiles.get(avoid, 0.0)
+        total_weight += weight
+
+    # urgency rules
     urgency_map = {
         "low": 0.2,
         "medium": 0.5,
-        "high":  1.0
+        "high": 1.0
     }
-    score += urgency_map.get(urgency, 0.5) * drink_profiles.get("energy", 0.0)
+    weight = urgency_map.get(urgency, 0.5)
+    score += weight * drink_profiles.get("energy", 0.0)
+    total_weight += weight
+
+    # normalse the score by dividing by the total weight
+    if total_weight > 0:
+        score /= total_weight
 
     # ensures score stays between -1 and 1
     score = max(min(score, 1.0), -1.0)

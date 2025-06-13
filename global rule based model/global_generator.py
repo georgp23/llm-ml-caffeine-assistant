@@ -39,7 +39,7 @@ with open("global_ml_training_data.csv", "w", newline="") as f:
             "goal": goal_choice,
             "time_of_day": time_of_day_choice,
             "user_state": user_state_choice,
-            "prefferred_effects": preferred_effect,
+            "preferred_effects": preferred_effect,
             "avoid_effects": avoid_effect,
             "urgency": urgency_level,
             "drink": drink,

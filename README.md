@@ -18,14 +18,24 @@ This project aims to solved the problem of LLM unreliability by replacing the re
 ## Progress
 
 User Prompt: ✅
+
 LLM Parses Prompt into JSON format: ✅
+
 Global Drinks Profile: ✅
+
 Global Context-to-Effectiveness Model (RF): ✅
+
 Personal ML Rank Adjuster: 🚧 Coming soon
+
 Ranked Drink List: ✅
+
 LLM Explain Recommendations: ✅
+
 User Feedback: 🚧 Coming soon
+
 Update Personal ML model: 🚧 Coming soon
+
 Personal Feedback Logs: 🚧 Coming soon
+
 Aggregate and Retrain Global ML Model: 🚧 Coming soon 
 

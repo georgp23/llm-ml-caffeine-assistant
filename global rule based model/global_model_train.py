@@ -52,3 +52,10 @@ print("R^2 score:", score)
 # Save the trained model to a file
 with open("drink_recommendation_model.pkl", "wb") as f:
     pickle.dump(model, f)
+
+# Save the feature columns to a .pkl file
+feature_columns = list(X.columns)
+with open("feature_columns.pkl", "wb") as f:
+    pickle.dump(feature_columns, f)
+
+print("Feature columns saved to feature_columns.pkl")

@@ -4,6 +4,7 @@ import pickle
 from sklearn.preprocessing import MultiLabelBinarizer
 from global_rule_based_model.drink_profiles import drink_profiles
 from LLM_interactions.parse_goal import parse_goal_to_json
+from LLM_interactions.explain_drink_choices import explain_choices
 
 # Load the trained model and feature columns used during training
 with open("drink_recommendation_model.pkl", "rb") as model_file:
@@ -121,9 +122,10 @@ def main():
         if "error" in recommendations:
             print(f"Error: {recommendations['error']}")
         else:
-            print("\nRecommended Drinks (ranked by predicted effectiveness):")
-            for rec in recommendations:
-                print(f"- {rec['drink']}: {rec['predicted_effectiveness']:.3f}")
+            top_recommendations = recommendations[:3]
+            explanation = explain_choices(top_recommendations, prompt)
+            print(explanation)
+            
     except Exception as e:
         print(f"An error occurred: {e}")
 

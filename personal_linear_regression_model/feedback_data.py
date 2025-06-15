@@ -2,8 +2,8 @@ import csv
 import os
 
 def feedback_logger(feedback, scenario, drink, expected):
-    
-    with open("global_ml_training_data.csv", "w", newline="") as f:
+
+    with open("personal_ml_training_data.csv", "a", newline="") as f:
         fieldnames = ["goal", "time_of_day", "user_state", "day_of_week", "preferred_effects", "avoid_effects", "urgency", "drink", "effectiveness" "feedback"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         file_exists = os.path.isfile("global_ml_training_data.csv")

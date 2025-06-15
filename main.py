@@ -4,7 +4,7 @@ import pickle
 from sklearn.preprocessing import MultiLabelBinarizer
 from global_rule_based_model.drink_profiles import drink_profiles
 from LLM_interactions.parse_goal import parse_goal_to_json
-from LLM_interactions.explain_drink_choices import explain_choices
+from LLM_interactions.explain_drink_choice import explain_choices
 
 # Load the trained model and feature columns used during training
 with open("drink_recommendation_model.pkl", "rb") as model_file:
@@ -95,39 +95,49 @@ def recommend_drink(input_X):
 def main():
     print("Welcome to the Caffeine Recommendation System!")
     print("Describe your situation, and we'll recommend the best drink for you.")
+    print("Type 'exit' to quit the program.")
 
-    # Get user input as a natural language prompt
-    prompt = input("What do you need? (e.g., 'I need to focus tonight but I'm a bit anxious'): ").strip()
+    # Loop
+    while True:
+        # Get user input as a natural language prompt
+        prompt = input("\nWhat do you need? (e.g., 'I need to focus tonight but I'm a bit anxious'): ").strip()
 
-    # Convert the users input into structured JSON
-    print("\nParsing your input into structured JSON...")
-    parsed_json = parse_goal_to_json(prompt)
+        # Exit the loop if the user types exit
+        if prompt.lower() == "exit":
+            print("Goodbye! Stay caffeinated responsibly!")
+            break
 
-    # Check if the parsing was successful
-    if isinstance(parsed_json, dict) and "error" in parsed_json:
-        print(f"Error: {parsed_json['error']}")
-        return
+        # Convert the user's input into structured JSON
+        print("\nParsing your input into structured JSON...")
+        parsed_json = parse_goal_to_json(prompt)
 
-    try:
-        # Convert the parsed JSON string into a dictionary
-        user_input = json.loads(parsed_json)
+        # Check if the parsing was successful
+        if isinstance(parsed_json, dict) and "error" in parsed_json:
+            print(f"Error: {parsed_json['error']}")
+            continue
 
-        # Preprocess the input for the model
-        input_X = preprocess_input(user_input)
+        try:
+            # Convert the parsed JSON string into a dictionary
+            user_input = json.loads(parsed_json)
 
-        # Get drink recommendations
-        recommendations = recommend_drink(input_X)
+            # Preprocess the input for the model
+            input_X = preprocess_input(user_input)
 
-        # Display the recommendations
-        if "error" in recommendations:
-            print(f"Error: {recommendations['error']}")
-        else:
-            top_recommendations = recommendations[:3]
-            explanation = explain_choices(top_recommendations, prompt)
-            print(explanation)
-            
-    except Exception as e:
-        print(f"An error occurred: {e}")
+            # Get drink recommendations
+            recommendations = recommend_drink(input_X)
+
+            # Display the recommendations
+            if "error" in recommendations:
+                print(f"Error: {recommendations['error']}")
+            else:
+                top_recommendations = recommendations[:3]
+                explanation = explain_choices(top_recommendations, prompt)
+                print("\nExplanation for the recommendations:")
+                print(explanation)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()

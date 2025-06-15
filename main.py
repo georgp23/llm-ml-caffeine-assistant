@@ -135,6 +135,15 @@ def main():
                 print("\nExplanation for the recommendations:")
                 print(explanation)
 
+                #Take feedback from the suggestion
+                feedback = int(input("\nRate this suggestion from 1-5: "))
+                while feedback < 1 or feedback > 5:
+                    print("Please provide a rating between 1 and 5.")
+                    feedback = int(input("\nRate this suggestion from 1-5: "))
+
+                # Pass input_X (the df) and feedback to feedback_logger
+                feedback_logger(feedback, input_X)
+                
         except Exception as e:
             print(f"An error occurred: {e}")
 

@@ -5,6 +5,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from global_rule_based_model.drink_profiles import drink_profiles
 from LLM_interactions.parse_goal import parse_goal_to_json
 from LLM_interactions.explain_drink_choice import explain_choices
+from personal_linear_regression_model.feedback_data import feedback_logger
 
 # Load the trained model and feature columns used during training
 with open("drink_recommendation_model.pkl", "rb") as model_file:
@@ -131,6 +132,7 @@ def main():
                 print(f"Error: {recommendations['error']}")
             else:
                 top_recommendations = recommendations[:3]
+                top_recommendation = recommendations[:1]
                 explanation = explain_choices(top_recommendations, prompt)
                 print("\nExplanation for the recommendations:")
                 print(explanation)
@@ -139,10 +141,10 @@ def main():
                 feedback = int(input("\nRate this suggestion from 1-5: "))
                 while feedback < 1 or feedback > 5:
                     print("Please provide a rating between 1 and 5.")
-                    feedback = int(input("\nRate this suggestion from 1-5: "))
+                    feedback = int(input("\nRate the top suggestion from 1-5: "))
 
                 # Pass input_X (the df) and feedback to feedback_logger
-                feedback_logger(feedback, input_X)
+                feedback_logger(feedback, input_X, top_recommendation['drink'], top_recommendation['predicted_effectiveness'])
                 
         except Exception as e:
             print(f"An error occurred: {e}")

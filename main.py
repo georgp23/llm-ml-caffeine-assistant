@@ -2,9 +2,9 @@ import json
 import pandas as pd
 import pickle
 from sklearn.preprocessing import MultiLabelBinarizer
-from global_rule_based_model.drink_profiles import drink_profiles
-from LLM_interactions.parse_goal import parse_goal_to_json
-from LLM_interactions.explain_drink_choice import explain_choices
+from drink_profiles import drink_profiles
+from parse_goal import parse_goal_to_json
+from explain_drink_choices import explain_choices
 from personal_linear_regression_model.feedback_data import feedback_logger
 
 # Load the trained model and feature columns used during training
@@ -131,20 +131,21 @@ def main():
             if "error" in recommendations:
                 print(f"Error: {recommendations['error']}")
             else:
-                top_recommendations = recommendations[:3]
-                top_recommendation = recommendations[:1]
-                explanation = explain_choices(top_recommendations, prompt)
+                # Extract the top recommendation (first dictionary in the list)
+                top_recommendation = recommendations[0]  # Access the first element directly
+                explanation = explain_choices([top_recommendation], prompt)
                 print("\nExplanation for the recommendations:")
                 print(explanation)
 
-                #Take feedback from the suggestion
+                # Take feedback from the suggestion
                 feedback = int(input("\nRate this suggestion from 1-5: "))
                 while feedback < 1 or feedback > 5:
                     print("Please provide a rating between 1 and 5.")
                     feedback = int(input("\nRate the top suggestion from 1-5: "))
 
-                # Pass input_X (the df) and feedback to feedback_logger
-                feedback_logger(feedback, input_X, top_recommendation['drink'], top_recommendation['predicted_effectiveness'])
+                # Pass input_X (the df), drink, predicted effectiveness, and feedback to feedback_logger
+                feedback_logger(feedback, input_X, top_recommendation['drink'], top_recommendation['predicted_effectiveness']
+                )
                 
         except Exception as e:
             print(f"An error occurred: {e}")

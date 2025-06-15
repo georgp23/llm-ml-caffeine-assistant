@@ -35,7 +35,7 @@ User Feedback: ✅
 
 Update Personal ML model: 🚧 Coming soon
 
-Personal Feedback Logs: 🚧 Coming soon
+Personal Feedback Logs: ✅
 
 Aggregate and Retrain Global ML Model: 🚧 Coming soon 
 

@@ -2,9 +2,9 @@ import json
 import pandas as pd
 import pickle
 from sklearn.preprocessing import MultiLabelBinarizer
-from drink_profiles import drink_profiles
-from parse_goal import parse_goal_to_json
-from explain_drink_choices import explain_choices
+from global_rule_based_model.drink_profiles import drink_profiles
+from LLM_interactions.parse_goal import parse_goal_to_json
+from LLM_interactions.explain_drink_choice import explain_choices
 from personal_linear_regression_model.feedback_data import feedback_logger
 
 # Load the trained model and feature columns used during training
@@ -112,9 +112,15 @@ def main():
         print("\nParsing your input into structured JSON...")
         parsed_json = parse_goal_to_json(prompt)
 
+        # Convert parsed_json is a dictionary
+        if isinstance(parsed_json, str):
+            json_dict = json.loads(parsed_json)
+        else:
+            json_dict = parsed_json
+
         # Check if the parsing was successful
-        if isinstance(parsed_json, dict) and "error" in parsed_json:
-            print(f"Error: {parsed_json['error']}")
+        if isinstance(json_dict, dict) and "error" in json_dict:
+            print(f"Error: {json_dict['error']}")
             continue
 
         try:
@@ -141,15 +147,18 @@ def main():
                 feedback = int(input("\nRate this suggestion from 1-5: "))
                 while feedback < 1 or feedback > 5:
                     print("Please provide a rating between 1 and 5.")
-                    feedback = int(input("\nRate the top suggestion from 1-5: "))
+                    feedback = int(input("\nRate this suggestion from 1-5: "))
 
-                # Pass input_X (the df), drink, predicted effectiveness, and feedback to feedback_logger
-                feedback_logger(feedback, input_X, top_recommendation['drink'], top_recommendation['predicted_effectiveness']
+                # Pass json, drink, predicted effectiveness, and feedback to feedback_logger
+                feedback_logger(
+                    feedback,
+                    input_X,
+                    top_recommendation['drink'],  # Access the 'drink' key from the dictionary
+                    top_recommendation['predicted_effectiveness']  # Access the 'predicted_effectiveness' key
                 )
                 
         except Exception as e:
             print(f"An error occurred: {e}")
-
 
 if __name__ == "__main__":
     main()

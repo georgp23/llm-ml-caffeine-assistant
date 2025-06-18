@@ -6,23 +6,15 @@ def feedback_logger(feedback, input_X, drink, expected):
     # One-hot encode the drink option
     drink_encoded = pd.get_dummies([drink], prefix="drink").iloc[0].to_dict()
 
-    with open("personal_ml_training_data.csv", "a", newline="") as f:
-        # Add all columns from input_X plus one-hot encoded drink, expected effectiveness, and feedback
-        fieldnames = list(input_X.columns) + list(drink_encoded.keys()) + ["expected_effectiveness", "feedback"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+    file_path = "personal_ml_training_data.csv"
 
-        # Write the header if the file is new
-        file_exists = os.path.isfile("personal_ml_training_data.csv")
-        if not file_exists:
-            writer.writeheader()
+    # Open the file in append mode
+    with open(file_path, "a", newline="") as f:
+        writer = csv.writer(f)
 
-        # Add the drink, expected effectiveness, and feedback to the row
-        row = input_X.iloc[0].to_dict()  # Convert the first row of input_X to a dictionary
-        row.update(drink_encoded)  # Add one-hot encoded drink values
-        row.update({
-            "expected_effectiveness": expected,
-            "feedback": feedback
-        })
+        # Construct the row from input_X + drink + effectiveness + feedback
+        row = list(input_X.iloc[0])  # Assumes input_X is a single-row DataFrame
+        row += list(drink_encoded.values())
+        row += [expected, feedback]
 
         writer.writerow(row)
-

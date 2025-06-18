@@ -6,6 +6,8 @@ from global_rule_based_model.drink_profiles import drink_profiles
 from LLM_interactions.parse_goal import parse_goal_to_json
 from LLM_interactions.explain_drink_choice import explain_choices
 from personal_linear_regression_model.feedback_data import feedback_logger
+from personal_linear_regression_model.personal_model_train import train_personal_model
+
 
 # Load the trained model and feature columns used during training
 with open("drink_recommendation_model.pkl", "rb") as model_file:
@@ -160,6 +162,18 @@ def main():
                     user_id
                 )
                 
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        
+        # Check how many records for user_id there are in personal_ml_training_data.csv
+        try: 
+            feedback_data = pd.read_csv("personal_ml_training_data.csv")
+            record_count = len(feedback_data[feedback_data.iloc[:, -2] == user_id])
+            
+            # once enough records exist per user, train model
+            if record_count > 20:
+                train_personal_model(user_id)
+
         except Exception as e:
             print(f"An error occurred: {e}")
 

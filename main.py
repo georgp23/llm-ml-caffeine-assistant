@@ -100,6 +100,8 @@ def main():
 
     # Loop
     while True:
+        #Get user ID
+        user_id = input("User ID: ").strip()
         # Get user input as a natural language prompt
         prompt = input("\nWhat do you need? (e.g., 'I need to focus tonight but I'm a bit anxious'): ").strip()
 
@@ -154,7 +156,8 @@ def main():
                     feedback,
                     input_X,
                     top_recommendation['drink'],  # Access the 'drink' key from the dictionary
-                    top_recommendation['predicted_effectiveness']  # Access the 'predicted_effectiveness' key
+                    top_recommendation['predicted_effectiveness'],  # Access the 'predicted_effectiveness' key
+                    user_id
                 )
                 
         except Exception as e:

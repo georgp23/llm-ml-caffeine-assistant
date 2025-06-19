@@ -128,8 +128,7 @@ def main():
             continue
 
         try:
-            # Convert the parsed JSON string into a dictionary
-            user_input = json.loads(parsed_json)
+            user_input = json_dict
 
             # Preprocess the input for the model
             input_X = preprocess_input(user_input)

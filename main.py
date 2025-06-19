@@ -168,7 +168,7 @@ def main():
         # Check how many records for user_id there are in personal_ml_training_data.csv
         try: 
             feedback_data = pd.read_csv("personal_ml_training_data.csv")
-            record_count = len(feedback_data[feedback_data.iloc[:, -2] == user_id])
+            record_count = len(feedback_data[feedback_data.iloc[:, -1] == user_id])
             
             # once enough records exist per user, train model
             if record_count > 20:

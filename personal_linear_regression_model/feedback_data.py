@@ -1,22 +1,30 @@
 import csv
 import os
-import pandas as pd
+from global_rule_based_model.drink_profiles import drink_profiles
 
-def feedback_logger(feedback, input_X, drink, expected, user_id):
+
+def feedback_logger(input_X, drink, feedback, user_id):
     
-    # One-hot encode the drink option
-    drink_encoded = pd.get_dummies([drink], prefix="drink").iloc[0].to_dict()
-
     file_path = "personal_ml_training_data.csv"
 
-    # Open the file in append mode
+    # One-hot encode the drink name
+    drink_encoded = {f"drink_{d}": 1 if d == drink else 0 for d in drink_profiles.keys()}
+
+    # Combine scenario + drink
+    row = input_X.copy()
+    for k, v in drink_encoded.items():
+        row[k] = v
+
+    # Add target and user ID
+    row["feedback"] = feedback
+    row["user_id"] = user_id
+
+    # Write to CSV
+    fieldnames = list(row.keys())
+    file_exists = os.path.isfile(file_path)
+
     with open(file_path, "a", newline="") as f:
-        writer = csv.writer(f)
-
-        # Construct the row from input_X + drink + effectiveness + feedback + user_id
-        row = list(input_X.iloc[0])  # Assumes input_X is a single-row DataFrame
-        row += list(drink_encoded.values())
-        row += [expected, feedback, user_id]  # Add expected effectiveness, feedback, and user_id
-
-        # Write the row to the CSV file
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        if not file_exists:
+            writer.writeheader()
         writer.writerow(row)

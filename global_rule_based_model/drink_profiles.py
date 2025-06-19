@@ -15,7 +15,7 @@ drink_profiles = {
         "anxiety": -0.5,
         "insomnia": -0.3,
         "stomach_upset": -0.2,
-        "urgancy": 0.2
+        "urgency": 0.2
 
     },
     "matcha":{
@@ -34,7 +34,7 @@ drink_profiles = {
         "anxiety": -0.4,
         "insomnia": -0.4,
         "stomach_upset": -0.2,
-        "urgancy": 0.4
+        "urgency": 0.4
     },
     "black_tea":{
         "energy": 0.5,
@@ -52,7 +52,7 @@ drink_profiles = {
         "anxiety": -0.3,
         "insomnia": -0.5,
         "stomach_upset": -0.3,
-        "urgancy": 0.4
+        "urgency": 0.4
     },
     "yerba_mate":{
         "energy": 0.8,
@@ -70,7 +70,7 @@ drink_profiles = {
         "anxiety": -0.3,
         "insomnia": -0.6,
         "stomach_upset": -0.3,
-        "urgancy": 0.6
+        "urgency": 0.6
     },
     "brewed_coffee":{
         "energy": 0.9,
@@ -88,7 +88,7 @@ drink_profiles = {
         "anxiety": -0.6,
         "insomnia": -0.8,
         "stomach_upset": -0.4,
-        "urgancy": 0.8
+        "urgency": 0.8
     },
     "cold_brew":{
         "energy": 1.0,
@@ -106,7 +106,7 @@ drink_profiles = {
         "anxiety": -0.7,
         "insomnia": -0.9,
         "stomach_upset": -0.5,
-        "urgancy": 1.0
+        "urgency": 1.0
     },
     "espresso":{
         "energy": 0.9,
@@ -124,7 +124,7 @@ drink_profiles = {
         "anxiety": -0.6,
         "insomnia": -0.9,
         "stomach_upset": -0.4,
-        "urgancy": 1.0
+        "urgency": 1.0
     },
     "decaf_coffee":{
         "energy": 0.1,
@@ -142,7 +142,7 @@ drink_profiles = {
         "anxiety": -0.9,
         "insomnia": -0.7,
         "stomach_upset": -0.1,
-        "urgancy": 0.1
+        "urgency": 0.1
     },
     "energy_drink":{
         "energy": 1.0,
@@ -160,6 +160,6 @@ drink_profiles = {
         "anxiety": -0.8,
         "insomnia": -1.0,
         "stomach_upset": -0.6,
-        "urgancy": 1.0
+        "urgency": 1.0
     }
 }

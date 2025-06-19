@@ -153,14 +153,14 @@ def main():
                     print("Please provide a rating between 1 and 5.")
                     feedback = int(input("\nRate this suggestion from 1-5: "))
 
-                # Pass json, drink, predicted effectiveness, and feedback to feedback_logger
-                feedback_logger(
-                    feedback,
-                    input_X,
-                    top_recommendation['drink'],  # Access the 'drink' key from the dictionary
-                    top_recommendation['predicted_effectiveness'],  # Access the 'predicted_effectiveness' key
-                    user_id
-                )
+            # Pass json, drink, predicted effectiveness, and feedback to feedback_logger
+            feedback_logger(
+                input_X.iloc[0].to_dict(),  # row as dict
+                top_recommendation['drink'],
+                feedback,
+                user_id
+            )
+
                 
         except Exception as e:
             print(f"An error occurred: {e}")

@@ -28,11 +28,10 @@ with open("global_ml_training_data.csv", "w", newline="") as f:
         urgency_level = random.choice(urgency)
         drink = random.choice(drinks)
 
-        # Pass the correct drink profile to rate_drink
-        drink_profile = drink_profiles[drink]
+        # Pass the drink name and profiles to rate_drink
         effectiveness = rate_drink(
             goal_choice, time_of_day_choice, user_state_choice,
-            [preferred_effect], [avoid_effect], urgency_level, drink_profile
+            [preferred_effect], [avoid_effect], urgency_level, drink, drink_profiles
         )
 
         writer.writerow({

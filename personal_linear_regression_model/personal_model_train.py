@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import pickle
+import os
+import json
 
 def train_personal_model(user_id):
 
@@ -32,6 +34,18 @@ def train_personal_model(user_id):
         pickle.dump(model, f)
 
     print(f"Model for user_id {user_id} saved successfully!")
+
+    # Save the score to json file
+    score_file = "user_models.json"
+    if os.path.exists(score_file):
+        with open(score_file, "r") as f:
+            scores = json.load(f)
+    else:
+        scores = {}
+
+    scores[str(user_id)] = round(score, 4)
+
+    with open(score_file, "w") as f:
+        json.dump(scores, f, indent=2)
+
     return score
-
-

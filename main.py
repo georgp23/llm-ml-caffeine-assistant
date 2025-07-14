@@ -110,7 +110,8 @@ def main():
         try:
             feedback_data = pd.read_csv("personal_ml_training_data.csv")
             record_count = len(feedback_data[feedback_data.iloc[:, -1] == user_id])
-            if record_count > 20:
+            # Update every 20 records
+            if record_count % 20 == 0:
                 train_personal_model(user_id)
         except Exception as e:
             print(f"An error occurred: {e}")

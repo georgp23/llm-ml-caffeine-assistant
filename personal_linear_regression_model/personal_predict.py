@@ -4,7 +4,7 @@ import os
 
 def predict_with_personal_model(user_id, input_features):
 
-    model_path = f"personal_linear_regression_model_user_{user_id}.pkl"
+    model_path = f"models/personal_linear_regression_model_user_{user_id}.pkl"
     
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"No model found for user_id {user_id}. Train the model first.")

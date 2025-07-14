@@ -7,8 +7,8 @@ import json
 
 def train_personal_model(user_id):
 
-    file_path="personal_ml_training_data.csv"
-    model_output=f"personal_linear_regression_model_user_{user_id}.pkl"
+    file_path="data/personal_ml_training_data.csv"
+    model_output=f"models/personal_linear_regression_model_user_{user_id}.pkl"
 
     df = pd.read_csv(file_path)
 
@@ -36,7 +36,7 @@ def train_personal_model(user_id):
     print(f"Model for user_id {user_id} saved successfully!")
 
     # Save the score to json file
-    score_file = "user_models.json"
+    score_file = "data/user_models.json"
     if os.path.exists(score_file):
         with open(score_file, "r") as f:
             scores = json.load(f)

@@ -5,7 +5,7 @@ from global_rule_based_model.drink_profiles import drink_profiles
 
 def feedback_logger(input_X, drink, feedback, user_id):
     
-    file_path = "personal_ml_training_data.csv"
+    file_path = "data/personal_ml_training_data.csv"
 
     # One-hot encode the drink name
     drink_encoded = {f"drink_{d}": 1 if d == drink else 0 for d in drink_profiles.keys()}

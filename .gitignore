@@ -1,0 +1,11 @@
+# Ignore envelope files
+*.env
+*.env.*
+.envrc
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Ignore pycache
+__pycache__/

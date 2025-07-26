@@ -46,8 +46,10 @@ def train_personal_model(user_id):
     scores[str(user_id)] = {
         "score": round(score, 4),
         "coef": model.coef_.tolist(),
-        "intercept": model.intercept_.tolist() if hasattr(model.intercept_, "tolist") else model.intercept_
+        "intercept": model.intercept_.tolist() if hasattr(model.intercept_, "tolist") else model.intercept_,
+        "n_samples": len(X_train)
     }
+
 
 
     with open(score_file, "w") as f:

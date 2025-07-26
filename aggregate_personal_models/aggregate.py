@@ -39,4 +39,5 @@ def aggregate_models():
 
     print(f"Federated global model saved to: {save_path}")
 
-    return global_model
+
+

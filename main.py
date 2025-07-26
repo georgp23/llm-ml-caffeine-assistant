@@ -8,10 +8,11 @@ from personal_linear_regression_model.personal_model_train import train_personal
 from personal_linear_regression_model.personal_predict import predict_with_personal_model
 from global_rule_based_model.predict_drinks import preprocess_input, recommend_drink
 from aggregate_personal_models.aggregate import aggregate_models
+from aggregate_personal_models.predict_federated import predict_with_fed_global_model
 
 def combine_predictions(global_score, personal_rating, personal_count, k=10):
-    normalised_personal = (personal_rating - 3) / 2  # scale from [1, 5] to [-1, 1]
-    alpha = 1 / (1 + personal_count / k)             # confidence weighting
+    normalised_personal = (personal_rating - 3) / 2 # scale from [1, 5] to [-1, 1]
+    alpha = 1 / (1 + personal_count / k) # confidence weighting
     final_score = alpha * global_score + (1 - alpha) * normalised_personal
     return round(final_score, 3)
 
@@ -53,17 +54,35 @@ def main():
             # Preprocess the input for the model
             input_X = preprocess_input(user_input)
 
-            # Get drink recommendations
-            recommendations = recommend_drink(input_X)
+            try:
+                # Use federated global model to score drinks
+                drink_features_df = preprocess_input(user_input)  # DataFrame with one row per drink
+                predicted_scores = predict_with_fed_global_model(drink_features_df)
 
-            # Display the recommendations
-            if "error" in recommendations:
-                print(f"Error: {recommendations['error']}")
-            else:
-                continue
+                # Create recommendation list with drink names and scores
+                drink_names = drink_features_df.index if drink_features_df.index.name == "drink" else list(drink_features_df.index)
+                recommendations = [
+                    {"drink": name, "predicted_effectiveness": score}
+                    for name, score in zip(drink_names, predicted_scores)
+                ]
 
-            top_recommendation = recommendations[0]
-            global_score = top_recommendation["predicted_effectiveness"]
+                recommendations = sorted(recommendations, key=lambda x: x["predicted_effectiveness"], reverse=True)
+                top_recommendation = recommendations[0]
+                global_score = top_recommendation["predicted_effectiveness"]
+
+                print("[Using federated global model for drink predictions]")
+
+            except FileNotFoundError:
+                print("[Federated model not found — falling back to rule-based global model]")
+                recommendations = recommend_drink(input_X)
+
+                if "error" in recommendations:
+                    print(f"Error: {recommendations['error']}")
+                    continue
+
+                top_recommendation = recommendations[0]
+                global_score = top_recommendation["predicted_effectiveness"]
+
 
             # Check for personal model
             try:
@@ -97,11 +116,12 @@ def main():
 
             # Pass json, drink, predicted effectiveness, and feedback to feedback_logger
             feedback_logger(
-                input_X.iloc[0].to_dict(),  # row as dict
+                drink_features_df.loc[top_recommendation['drink']].to_dict(),
                 top_recommendation['drink'],
                 feedback,
                 user_id
             )
+
 
                 
         except Exception as e:

@@ -43,7 +43,12 @@ def train_personal_model(user_id):
     else:
         scores = {}
 
-    scores[str(user_id)] = round(score, 4)
+    scores[str(user_id)] = {
+        "score": round(score, 4),
+        "coef": model.coef_.tolist(),
+        "intercept": model.intercept_.tolist() if hasattr(model.intercept_, "tolist") else model.intercept_
+    }
+
 
     with open(score_file, "w") as f:
         json.dump(scores, f, indent=2)

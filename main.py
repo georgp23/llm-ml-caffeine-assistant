@@ -1,3 +1,4 @@
+import os
 import json
 import pandas as pd
 from LLM_interactions.parse_goal import parse_goal_to_json
@@ -6,6 +7,7 @@ from personal_linear_regression_model.feedback_data import feedback_logger
 from personal_linear_regression_model.personal_model_train import train_personal_model
 from personal_linear_regression_model.personal_predict import predict_with_personal_model
 from global_rule_based_model.predict_drinks import preprocess_input, recommend_drink
+from aggregate_personal_models.aggregate import aggregate_models
 
 def combine_predictions(global_score, personal_rating, personal_count, k=10):
     normalised_personal = (personal_rating - 3) / 2  # scale from [1, 5] to [-1, 1]
@@ -87,7 +89,6 @@ def main():
                 print(explanation)
                 print(f"Predicted Effectiveness Score: {global_score:.2f}")
 
-                # Take feedback from the suggestion
             # Get user feedback
             feedback = int(input("\nRate this suggestion from 1-5: "))
             while feedback < 1 or feedback > 5:
@@ -115,6 +116,18 @@ def main():
                 train_personal_model(user_id)
         except Exception as e:
             print(f"An error occurred: {e}")
+
+        # Try federated global model if enough personal models exist
+        try:
+            personal_model_dir = "models/personal_linear_regression_model_user_"
+            model_files = [f for f in os.listdir(personal_model_dir) if f.endswith(".pkl")]
+            num_personal_models = len(model_files)
+            if num_personal_models > 20:
+                aggregate_models()
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     main()

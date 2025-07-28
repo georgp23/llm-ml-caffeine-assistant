@@ -28,6 +28,14 @@ def aggregate_models():
     avg_intercept_delta = sum(intercept_deltas) / total_samples
 
     global_model = LinearRegression()
+
+    # Initialse model by fitting dummy data to set attributes properly
+    n_features = avg_delta.shape[0]
+    X_dummy = np.zeros((1, n_features))
+    y_dummy = np.zeros(1)
+    global_model.fit(X_dummy, y_dummy)
+
+    # overwrite coef and intercepts
     global_model.coef_ = avg_delta
     global_model.intercept_ = avg_intercept_delta
 

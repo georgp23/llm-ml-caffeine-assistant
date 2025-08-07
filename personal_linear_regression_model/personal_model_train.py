@@ -13,10 +13,10 @@ def train_personal_model(user_id):
     df = pd.read_csv(file_path)
 
     # Filter dataset by user_id
-    df = df[df.iloc[:, -2] == user_id]  
+    df = df[df.iloc[:, -1] == user_id]  
 
     X = df.iloc[:, :-2]  # All columns except the last two (features)
-    y = df.iloc[:, -1]   # The last column (feedback), target
+    y = df.iloc[:, -2]   # The last column (feedback), target
 
     # Split data into training and testing
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

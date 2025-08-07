@@ -64,6 +64,8 @@ Personal Feedback Logs: ✅
 
 Aggregate and Retrain Global ML Model: ✅
 
+Robustness and Testing: 🚧 In progress
+
 ## Contributing
 
 Contributions are welcome! Please feel free to open issues or submit PRs to improve the project.

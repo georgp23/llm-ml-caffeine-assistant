@@ -14,7 +14,7 @@ user_state = ["tired", "anxious", "wired", "foggy", "stressed", "rested", "no_ap
 
 drinks = list(drink_profiles.keys())
 
-with open("global_ml_training_data.csv", "w", newline="") as f:
+with open("data/global_ml_training_data.csv", "w", newline="") as f:
     fieldnames = ["goal", "time_of_day", "user_state", "preferred_effects", "avoid_effects", "urgency", "drink", "effectiveness"]
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()  # Write the header once

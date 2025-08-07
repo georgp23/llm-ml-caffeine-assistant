@@ -24,7 +24,12 @@ def main():
     # Loop
     while True:
         #Get user ID
-        user_id = input("User ID: ").strip()
+        try:
+            user_id = int(input("User ID: ").strip())
+        except ValueError:
+            print("Invalid User ID. Please enter a number.")
+            continue
+        
         # Get user input as a natural language prompt
         prompt = input("\nWhat do you need? (e.g., 'I need to focus tonight but I'm a bit anxious'): ").strip()
 
@@ -87,7 +92,7 @@ def main():
             # Check for personal model
             try:
                 personal_score = predict_with_personal_model(user_id, input_X)
-                feedback_data = pd.read_csv("personal_ml_training_data.csv")
+                feedback_data = pd.read_csv("data/personal_ml_training_data.csv")
                 personal_count = len(feedback_data[feedback_data.iloc[:, -1] == user_id])
                 final_score = combine_predictions(global_score, personal_score, personal_count)
 
@@ -129,18 +134,19 @@ def main():
 
         # Try training personal model if enough records
         try:
-            feedback_data = pd.read_csv("personal_ml_training_data.csv")
+            feedback_data = pd.read_csv("data/personal_ml_training_data.csv")
             record_count = len(feedback_data[feedback_data.iloc[:, -1] == user_id])
             # Update every 20 records
-            if record_count % 20 == 0:
+            if record_count >= 20 and record_count % 20 == 0:
                 train_personal_model(user_id)
         except Exception as e:
             print(f"An error occurred: {e}")
 
         # Try federated global model if enough personal models exist
         try:
-            personal_model_dir = "models/personal_linear_regression_model_user_"
-            model_files = [f for f in os.listdir(personal_model_dir) if f.endswith(".pkl")]
+            model_dir = "models"
+            prefix = "personal_linear_regression_model_user_"
+            model_files = [f for f in os.listdir(model_dir) if f.startswith(prefix) and f.endswith(".pkl")]
             num_personal_models = len(model_files)
             if num_personal_models > 20:
                 aggregate_models()

@@ -4,10 +4,10 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from global_rule_based_model.drink_profiles import drink_profiles
 
 # Load the trained model and feature columns used during training
-with open("drink_recommendation_model.pkl", "rb") as model_file:
+with open("models/drink_recommendation_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
-with open("feature_columns.pkl", "rb") as feature_file:
+with open("data/feature_columns.pkl", "rb") as feature_file:
     feature_columns = pickle.load(feature_file)
 
 # Preprocess user input to match the format the model expects

@@ -5,7 +5,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 import pickle
 
 # Load the dataset
-df = pd.read_csv("global_ml_training_data.csv")
+df = pd.read_csv("data/global_ml_training_data.csv")
 
 # Handle missing or empty values in preferred and avoid effects
 df["preferred_effects"] = df["preferred_effects"].fillna("").apply(lambda x: x.split(",") if x else [])
@@ -50,12 +50,12 @@ score = model.score(X_test, y_test)
 print("R^2 score:", score)
 
 # Save the trained model to a file
-with open("drink_recommendation_model.pkl", "wb") as f:
+with open("models/drink_recommendation_model.pkl", "wb") as f:
     pickle.dump(model, f)
 
 # Save the feature columns to a .pkl file
 feature_columns = list(X.columns)
-with open("feature_columns.pkl", "wb") as f:
+with open("data/feature_columns.pkl", "wb") as f:
     pickle.dump(feature_columns, f)
 
 print("Feature columns saved to feature_columns.pkl")

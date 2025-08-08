@@ -9,7 +9,7 @@ Below is the proposed system architecture:
 
   
 
-![System Diagram](assets/System-Diagram.jpg)
+![System Diagram](assets/System-Diagram.png)
 
   
 

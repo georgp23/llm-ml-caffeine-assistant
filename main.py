@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import pandas as pd
 from LLM_interactions.parse_goal import parse_goal_to_json
 from LLM_interactions.explain_drink_choice import explain_choices
@@ -58,10 +59,10 @@ def main():
 
             # Preprocess the input for the model
             input_X = preprocess_input(user_input)
+            drink_features_df = input_X  # ensure available in all paths for logging
 
             try:
                 # Use federated global model to score drinks
-                drink_features_df = preprocess_input(user_input)  # DataFrame with one row per drink
                 predicted_scores = predict_with_fed_global_model(drink_features_df)
 
                 # Create recommendation list with drink names and scores
@@ -72,8 +73,6 @@ def main():
                 ]
 
                 recommendations = sorted(recommendations, key=lambda x: x["predicted_effectiveness"], reverse=True)
-                top_recommendation = recommendations[0]
-                global_score = top_recommendation["predicted_effectiveness"]
 
                 print("[Using federated global model for drink predictions]")
 
@@ -84,10 +83,26 @@ def main():
                 if "error" in recommendations:
                     print(f"Error: {recommendations['error']}")
                     continue
-
-                top_recommendation = recommendations[0]
-                global_score = top_recommendation["predicted_effectiveness"]
-
+                recommendations = sorted(recommendations, key=lambda x: x["predicted_effectiveness"], reverse=True)
+                    
+            # greedy E
+            try:
+                feedback_data = pd.read_csv("data/personal_ml_training_data.csv")
+                pc = len(feedback_data[feedback_data.iloc[:, -1] == user_id])
+            except FileNotFoundError:
+                pc = 0
+            epsilon = max(0.05, 0.30 - 0.005 * max(pc, 0))
+            
+            pool = recommendations[:5] if len(recommendations) > 5 else recommendations
+            if random.random() < epsilon and len(pool) > 1:
+                top_recommendation = random.choice(pool[1:]) # explore (avoid always best)
+                explored = True
+            else:
+                top_recommendation = pool[0] # exploit
+                explored = False
+            
+            global_score = top_recommendation["predicted_effectiveness"]
+            print(f"[E-greedy E={epsilon:.3f}] {'explore' if explored else 'exploit'} → {top_recommendation['drink']}")
 
             # Check for personal model
             try:
